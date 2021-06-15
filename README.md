@@ -9,6 +9,7 @@ $ symfony composer install
 # Useful recommendations
 
 ## Links
+- [DesignPatternsPHP](https://designpatternsphp.readthedocs.io/en/latest/README.html)
 - [Practical Design Patterns with PHP 7](https://speakerdeck.com/hhamon/practical-design-patterns-with-php-7)
 - [SOLID Design Principles](https://thedavidmasters.com/2018/10/27/solid-design-principles/)
 - [The S.O.L.I.D Principles in Pictures](https://medium.com/backticks-tildes/the-s-o-l-i-d-principles-in-pictures-b34ce2f1e898)
