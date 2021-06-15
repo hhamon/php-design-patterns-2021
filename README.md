@@ -20,3 +20,7 @@ $ symfony composer install
 - [The Pragmatic Programmer: From Journeyman to Master](https://www.amazon.fr/Pragmatic-Programmer-Journeyman-Master/dp/020161622X)
 - [Patterns of Enterprise Application Architecture](https://www.amazon.fr/Patterns-Enterprise-Application-Architecture-d%C2%B4Espagne/dp/B0073R93MO/ref=asap_bc?ie=UTF8)
 - [Clean Code: A Handbook of Agile Software Craftsmanship](https://www.oreilly.com/library/view/clean-code-a/9780136083238/)
+
+## Libraries
+- [Assert](https://github.com/beberlei/assert)
+- [Money](https://github.com/moneyphp/money)
