@@ -11,12 +11,18 @@ abstract class AbstractCouponFactory implements CouponFactoryInterface
 {
     private CouponCodeGeneratorInterface $generator;
 
+    /**
+     * The $generator argument is a "Strategy" pattern implementation.
+     */
     public function __construct(CouponCodeGeneratorInterface $generator)
     {
         $this->generator = $generator;
     }
 
-    public function createCoupon(array $options): CouponInterface
+    /**
+     * This method is a "Template Method" pattern implementation.
+     */
+    final public function createCoupon(array $options): CouponInterface
     {
         $code = $options['code'] ?? $this->generator->generate($options);
 
@@ -27,5 +33,8 @@ abstract class AbstractCouponFactory implements CouponFactoryInterface
         return $this->issueCoupon($code, $options);
     }
 
+    /**
+     * This method is a "Factory Method" pattern implementation.
+     */
     abstract protected function issueCoupon(string $code, array $options): CouponInterface;
 }
