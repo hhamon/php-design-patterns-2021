@@ -37,7 +37,7 @@ final class ErrorHandlerTest extends TestCase
             ->with($this->isInstanceOf(ExceptionCaughtEvent::class));
 
         $dispatcher = new EventDispatcher();
-        $dispatcher->addListener(ExceptionCaughtEvent::class, new StandardOutputEchoProcessor());
+        $dispatcher->addSubscriber(new StandardOutputEchoProcessor());
         $dispatcher->addListener(ExceptionCaughtEvent::class, $spy006);
         $dispatcher->addListener(ExceptionCaughtEvent::class, $spy007);
 
