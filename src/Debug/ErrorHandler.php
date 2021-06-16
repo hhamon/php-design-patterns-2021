@@ -2,6 +2,8 @@
 
 namespace App\Debug;
 
+use App\Debug\Processor\ErrorProcessorInterface;
+
 final class ErrorHandler
 {
     private static ?self $instance = null;
@@ -12,6 +14,9 @@ final class ErrorHandler
 
     private array $errors = [];
     private array $exceptions = [];
+
+    /** @var array ErrorProcessorInterface[] */
+    private array $processors = [];
 
     public static function create(int $errorLevel = E_ALL): self
     {
@@ -31,6 +36,15 @@ final class ErrorHandler
         }
 
         return self::$instance;
+    }
+
+    public function addProcessor(ErrorProcessorInterface $processor): self
+    {
+        if (! \in_array($processor, $this->processors, true)) {
+            $this->processors[] = $processor;
+        }
+
+        return $this;
     }
 
     private function __construct(int $errorLevel)
@@ -56,6 +70,8 @@ final class ErrorHandler
             'line' => $line,
             'ts' => time(),
         ];
+
+        $this->handleException(new \ErrorException($error, $number, 1, $file, $line));
     }
 
     public function handleException(\Throwable $e): void
@@ -64,6 +80,10 @@ final class ErrorHandler
             'exception' => $e,
             'ts' => time(),
         ];
+
+        foreach ($this->processors as $processor) {
+            $processor->process($this, $e);
+        }
     }
 
     public function getErrors(): array
@@ -74,6 +94,14 @@ final class ErrorHandler
     public function getExceptions(): array
     {
         return $this->exceptions;
+    }
+
+    public function reset(): self
+    {
+        $this->errors     = [];
+        $this->exceptions = [];
+
+        return $this;
     }
 
     public function register(): self
