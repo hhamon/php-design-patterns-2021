@@ -3,9 +3,11 @@
 namespace App\Tests\Debug;
 
 use App\Debug\ErrorHandler;
-use App\Debug\Processor\ErrorProcessorInterface;
+use App\Debug\ExceptionCaughtEvent;
+use App\Debug\Processor\EmailProcessor;
 use App\Debug\Processor\StandardOutputEchoProcessor;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 final class ErrorHandlerTest extends TestCase
 {
@@ -18,21 +20,29 @@ final class ErrorHandlerTest extends TestCase
 
     public function testCaptureExceptionAndProcessIt(): void
     {
-        $spy006 = new class () implements ErrorProcessorInterface {
+        $spy006 = new class {
             public bool $invoked = false;
-            public function process(ErrorHandler $errorHandler, \Throwable $exception): void
+            public function __invoke(ExceptionCaughtEvent $event): void
             {
+                $errorHandler = $event->getErrorHandler();
+                $exception = $event->getException();
+
                 $this->invoked = true;
             }
         };
 
-        $spy007 = $this->createMock(ErrorProcessorInterface::class);
-        $spy007->expects($this->once())->method('process');
+        $spy007 = $this->createMock(EmailProcessor::class);
+        $spy007->expects($this->once())
+            ->method('__invoke')
+            ->with($this->isInstanceOf(ExceptionCaughtEvent::class));
+
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(ExceptionCaughtEvent::class, new StandardOutputEchoProcessor());
+        $dispatcher->addListener(ExceptionCaughtEvent::class, $spy006);
+        $dispatcher->addListener(ExceptionCaughtEvent::class, $spy007);
 
         ErrorHandler::create()
-            ->addProcessor(new StandardOutputEchoProcessor())
-            ->addProcessor($spy006)
-            ->addProcessor($spy007)
+            ->setDispatcher($dispatcher)
             ->register();
 
         $this->assertFalse($spy006->invoked);

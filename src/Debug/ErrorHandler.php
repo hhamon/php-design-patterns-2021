@@ -2,7 +2,7 @@
 
 namespace App\Debug;
 
-use App\Debug\Processor\ErrorProcessorInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 final class ErrorHandler
 {
@@ -15,8 +15,7 @@ final class ErrorHandler
     private array $errors = [];
     private array $exceptions = [];
 
-    /** @var array ErrorProcessorInterface[] */
-    private array $processors = [];
+    private ?EventDispatcherInterface $dispatcher = null;
 
     public static function create(int $errorLevel = E_ALL): self
     {
@@ -38,11 +37,9 @@ final class ErrorHandler
         return self::$instance;
     }
 
-    public function addProcessor(ErrorProcessorInterface $processor): self
+    public function setDispatcher(EventDispatcherInterface $dispatcher): self
     {
-        if (! \in_array($processor, $this->processors, true)) {
-            $this->processors[] = $processor;
-        }
+        $this->dispatcher = $dispatcher;
 
         return $this;
     }
@@ -81,8 +78,8 @@ final class ErrorHandler
             'ts' => time(),
         ];
 
-        foreach ($this->processors as $processor) {
-            $processor->process($this, $e);
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(new ExceptionCaughtEvent($this, $e));
         }
     }
 

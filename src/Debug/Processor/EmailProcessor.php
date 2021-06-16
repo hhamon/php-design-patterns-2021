@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Debug\Processor;
 
-use App\Debug\ErrorHandler;
+use App\Debug\ExceptionCaughtEvent;
 
-final class EmailProcessor implements ErrorProcessorInterface
+class EmailProcessor
 {
-    public function process(ErrorHandler $errorHandler, \Throwable $exception): void
+    public function __invoke(ExceptionCaughtEvent $event): void
     {
         echo "Email has been sent!\n";
     }
