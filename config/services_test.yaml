@@ -1,0 +1,3 @@
+services:
+    App\Coupon\CodeGenerator\CouponCodeGeneratorInterface:
+        alias: App\Coupon\CodeGenerator\FixedUuidCouponCodeGenerator

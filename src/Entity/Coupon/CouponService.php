@@ -10,7 +10,7 @@ class CouponService
 {
     public function createCoupon(CouponDefinition $couponDefinition): CouponInterface
     {
-        switch ($couponDefinition->getCouponType()) {
+        /*switch ($couponDefinition->getCouponType()) {
             case 'RATE':
                 $couponBuilder = CouponBuilder::ofRate($couponDefinition->getCode(), $couponDefinition->getRate());
                 break;
@@ -23,5 +23,6 @@ class CouponService
         }
 
         return $couponBuilder->getCoupon();
+        */
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Coupon\Factory;
 
+use App\Coupon\CodeGenerator\CouponCodeGeneratorInterface;
 use App\Entity\Coupon\ValueCoupon;
 use Assert\Assertion;
 use Money\Currencies\ISOCurrencies;
@@ -15,8 +16,10 @@ final class ValueCouponFactory extends AbstractCouponFactory
 {
     private DecimalMoneyParser $parser;
 
-    public function __construct()
+    public function __construct(CouponCodeGeneratorInterface $generator)
     {
+        parent::__construct($generator);
+
         $this->parser = new DecimalMoneyParser(new ISOCurrencies());
     }
 
