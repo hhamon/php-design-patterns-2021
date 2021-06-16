@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Coupon\Factory;
 
-use App\Coupon\CodeGenerator\FixedUuidCouponCodeGenerator;
+use App\Coupon\CodeGenerator\CouponCodeGeneratorInterface;
 use App\Coupon\Factory\CouponFactoryInterface;
 use App\Coupon\Factory\ValueCouponFactory;
 use App\Entity\Coupon\ValueCoupon;
@@ -19,7 +19,16 @@ final class ValueCouponFactoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->factory = new ValueCouponFactory(new FixedUuidCouponCodeGenerator());
+        $stub = $this->createStub(CouponCodeGeneratorInterface::class);
+        $stub->method('generate')->willReturn('4856cf24-49b8-4f4a-b758-417104f42f94');
+
+        /*$mock = $this->createMock(CouponCodeGeneratorInterface::class);
+        $mock->expects($this->once())
+            ->method('generate')
+            ->with(['discount' => 'EUR 10', 'code' => 'CUSTOM'])
+            ->willReturn('4856cf24-49b8-4f4a-b758-417104f42f94');*/
+
+        $this->factory = new ValueCouponFactory($stub);
     }
 
     public function testCreateValueCouponWithFixedCouponCode(): void
